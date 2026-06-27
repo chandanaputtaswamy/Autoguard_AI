@@ -1,10 +1,10 @@
-# 🚗 AutoGuard AI — Vehicle Health & Predictive Maintenance
+#  AutoGuard AI — Vehicle Health & Predictive Maintenance
 
 > A hackathon-ready ML project that predicts vehicle failures, estimates Remaining Useful Life (RUL), scores vehicle health, and provides actionable maintenance recommendations — all via a modern interactive dashboard.
 
 ---
 
-## 📸 Dashboard Features
+##  Dashboard Features
 
 | Feature | Description |
 |---|---|
@@ -19,7 +19,7 @@
 
 ---
 
-## 🗂 Project Structure
+##  Project Structure
 
 ```
 autoguard/
@@ -52,7 +52,7 @@ autoguard/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Clone / download the project
 
@@ -88,7 +88,7 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 
 ---
 
-## 🧠 ML Models
+##  ML Models
 
 | Model | Accuracy | F1 Score | ROC-AUC |
 |---|---|---|---|
@@ -100,7 +100,7 @@ Best model selected automatically by F1 score.
 
 ---
 
-## 🔬 Features Used
+##  Features Used
 
 **Raw sensors:** Engine Temp, Vibration, Battery Voltage, Engine Load, RPM, Oil Pressure, Coolant Temp, Vehicle Age, Mileage
 
@@ -113,7 +113,7 @@ Best model selected automatically by F1 score.
 
 ---
 
-## 📊 Dataset
+##  Dataset
 
 Synthetic dataset of 5,000 vehicle records with ~35% failure rate.
 Includes realistic operating ranges, failure injection patterns, and 2% missing values for preprocessing practice.
@@ -122,7 +122,7 @@ CSV columns: `engine_temp_C, vibration_ms2, battery_voltage_V, engine_load_pct, 
 
 ---
 
-## 🎯 Hackathon Slide Mockup Descriptions
+##  Hackathon Slide Mockup Descriptions
 
 **Slide 1 — Problem:** Fleet operators lose millions to unplanned breakdowns. Predictive maintenance can cut downtime by 30–50%.
 
@@ -136,7 +136,7 @@ CSV columns: `engine_temp_C, vibration_ms2, battery_voltage_V, engine_load_pct, 
 
 ---
 
-## 📄 License
+##  License
 
 MIT — free for personal, educational, and hackathon use.
 "# Autoguard_AI" 
