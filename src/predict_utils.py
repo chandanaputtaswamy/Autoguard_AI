@@ -83,24 +83,76 @@ def estimate_rul(row: dict, failure_prob: float) -> int:
 def get_recommendations(row: dict, failure_prob: float) -> list:
     recs = []
     if row.get("engine_temp_C", 0) > 110:
-        recs.append("🌡️ Engine overheating detected — check coolant level and thermostat immediately.")
+        recs.append({
+            "text": "Engine overheating detected — check coolant level and thermostat immediately.",
+            "priority": "CRITICAL",
+            "code": "P0217",
+            "icon": "🌡️"
+        })
     if row.get("vibration_ms2", 0) > 0.9:
-        recs.append("🔧 High vibration — inspect engine mounts, driveshaft, and wheel balance.")
+        recs.append({
+            "text": "High vibration — inspect engine mounts, driveshaft, and wheel balance.",
+            "priority": "CRITICAL",
+            "code": "P0300",
+            "icon": "🔧"
+        })
     if row.get("battery_voltage_V", 15) < 11.5:
-        recs.append("🔋 Low battery voltage — test and replace battery; check alternator output.")
+        recs.append({
+            "text": "Low battery voltage — test and replace battery; check alternator output.",
+            "priority": "WARNING",
+            "code": "P0562",
+            "icon": "🔋"
+        })
     if row.get("engine_load_pct", 0) > 85:
-        recs.append("⚙️ High engine load — reduce load; check for clogged air filter or fuel issues.")
+        recs.append({
+            "text": "High engine load — reduce load; check for clogged air filter or fuel issues.",
+            "priority": "WARNING",
+            "code": "P115D",
+            "icon": "⚙️"
+        })
     if row.get("oil_pressure_psi", 80) < 25:
-        recs.append("🛢️ Low oil pressure — check oil level and pump; do not drive until resolved.")
+        recs.append({
+            "text": "Low oil pressure — check oil level and pump; do not drive until resolved.",
+            "priority": "CRITICAL",
+            "code": "P0522",
+            "icon": "🛢️"
+        })
     if row.get("coolant_temp_C", 0) > 110:
-        recs.append("💧 Coolant overheating — inspect radiator, water pump, and hoses.")
+        recs.append({
+            "text": "Coolant overheating — inspect radiator, water pump, and hoses.",
+            "priority": "CRITICAL",
+            "code": "P0117",
+            "icon": "💧"
+        })
     if row.get("mileage_km", 0) > 150000:
-        recs.append("📅 High mileage — schedule a full service: belts, plugs, filters, and fluids.")
+        recs.append({
+            "text": "High mileage — schedule a full service: belts, plugs, filters, and fluids.",
+            "priority": "ROUTINE",
+            "code": "DTC-INFO",
+            "icon": "📅"
+        })
+    
     if not recs:
-        if failure_prob < 0.15:
-            recs.append("✅ Vehicle in good health — continue regular maintenance schedule.")
-        else:
-            recs.append("⚠️ Moderate risk detected — schedule preventive inspection within 2 weeks.")
+        if failure_prob < 15: # failure_prob in predict() is failure_prob * 100, i.e., percent (0-100). Wait, in predict(), failure_prob = float(model.predict_proba(X_scaled)[0][1]). In get_recommendations(row, failure_prob), is failure_prob percent or fraction?
+            # Let's check predict(): recs = get_recommendations(row, failure_prob) (where failure_prob is the raw fraction from predict_proba).
+            # Yes! The raw fraction is passed to get_recommendations, and then the return dict multiplies it by 100.
+            # So failure_prob in get_recommendations is between 0.0 and 1.0. Let's make sure:
+            # Original code: if failure_prob < 0.15: ... else ...
+            # Yes! So we check failure_prob < 0.15.
+            if failure_prob < 0.15:
+                recs.append({
+                    "text": "Vehicle in good health — continue regular maintenance schedule.",
+                    "priority": "ROUTINE",
+                    "code": "SYSTEM-OK",
+                    "icon": "✅"
+                })
+            else:
+                recs.append({
+                    "text": "Moderate risk detected — schedule preventive inspection within 2 weeks.",
+                    "priority": "WARNING",
+                    "code": "PREV-MAINT",
+                    "icon": "⚠️"
+                })
     return recs
 
 def get_risk_factors(model, feature_names: list, row_engineered: dict) -> list:
