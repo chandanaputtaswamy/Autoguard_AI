@@ -133,26 +133,21 @@ def get_recommendations(row: dict, failure_prob: float) -> list:
         })
     
     if not recs:
-        if failure_prob < 15: # failure_prob in predict() is failure_prob * 100, i.e., percent (0-100). Wait, in predict(), failure_prob = float(model.predict_proba(X_scaled)[0][1]). In get_recommendations(row, failure_prob), is failure_prob percent or fraction?
-            # Let's check predict(): recs = get_recommendations(row, failure_prob) (where failure_prob is the raw fraction from predict_proba).
-            # Yes! The raw fraction is passed to get_recommendations, and then the return dict multiplies it by 100.
-            # So failure_prob in get_recommendations is between 0.0 and 1.0. Let's make sure:
-            # Original code: if failure_prob < 0.15: ... else ...
-            # Yes! So we check failure_prob < 0.15.
-            if failure_prob < 0.15:
-                recs.append({
-                    "text": "Vehicle in good health — continue regular maintenance schedule.",
-                    "priority": "ROUTINE",
-                    "code": "SYSTEM-OK",
-                    "icon": "✅"
-                })
-            else:
-                recs.append({
-                    "text": "Moderate risk detected — schedule preventive inspection within 2 weeks.",
-                    "priority": "WARNING",
-                    "code": "PREV-MAINT",
-                    "icon": "⚠️"
-                })
+        # failure_prob is a raw fraction (0.0–1.0) from predict_proba
+        if failure_prob < 0.15:
+            recs.append({
+                "text": "Vehicle in good health — continue regular maintenance schedule.",
+                "priority": "ROUTINE",
+                "code": "SYSTEM-OK",
+                "icon": "✅"
+            })
+        else:
+            recs.append({
+                "text": "Moderate risk detected — schedule preventive inspection within 2 weeks.",
+                "priority": "WARNING",
+                "code": "PREV-MAINT",
+                "icon": "⚠️"
+            })
     return recs
 
 def get_risk_factors(model, feature_names: list, row_engineered: dict) -> list:

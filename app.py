@@ -544,6 +544,9 @@ with tab_live:
             st.markdown("#### 🔧 Active Mechanic Work Orders & Diagnostic Trouble Codes (DTC)")
             recs = result["recommendations"]
             for rec in recs:
+                # Defensive: handle both dict (new format) and plain string (legacy)
+                if isinstance(rec, str):
+                    rec = {"text": rec, "priority": "ROUTINE", "code": "INFO", "icon": "ℹ️"}
                 badge_class = "badge-custom-danger" if rec["priority"] == "CRITICAL" else "badge-custom-warning" if rec["priority"] == "WARNING" else "badge-custom-info"
                 st.markdown(f"""
                 <div class="work-order-card">
@@ -596,8 +599,8 @@ with tab_live:
                     <div style="font-size: 12px; font-weight: bold; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 4px; margin-bottom: 8px; color: #fff;">ACTIVE DIAGNOSTIC CODES & REPAIR ACTIONS:</div>
                     {"".join([f'''
                     <div style="display: flex; gap: 8px; font-size: 12px; margin-bottom: 6px; align-items: flex-start;">
-                        <span style="background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 3px; font-weight: bold; min-width: 65px; text-align: center;">[{item['code']}]</span>
-                        <span style="color: #9ca3af;"><strong style="color: {h_color if item['priority'] == 'ROUTINE' else r_color}; font-weight: 700;">({item['priority']})</strong> {item['text']}</span>
+                        <span style="background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 3px; font-weight: bold; min-width: 65px; text-align: center;">[{(item if isinstance(item, dict) else {"code":"INFO","priority":"ROUTINE","text":item,"icon":"ℹ️"})['code']}]</span>
+                        <span style="color: #9ca3af;"><strong style="color: {h_color if (item if isinstance(item, dict) else {}).get('priority','') == 'ROUTINE' else r_color}; font-weight: 700;">({(item if isinstance(item, dict) else {"code":"INFO","priority":"ROUTINE","text":item,"icon":"ℹ️"})['priority']})</strong> {(item if isinstance(item, dict) else {"code":"INFO","priority":"ROUTINE","text":item,"icon":"ℹ️"})['text']}</span>
                     </div>
                     ''' for item in recs])}
                     
@@ -1101,6 +1104,9 @@ with tab_manual:
             sim_recs = sim_res["recommendations"]
             if sim_recs:
                 for item in sim_recs:
+                    # Defensive: handle both dict (new format) and plain string (legacy)
+                    if isinstance(item, str):
+                        item = {"text": item, "priority": "ROUTINE", "code": "INFO", "icon": "ℹ️"}
                     s_badge = "badge-custom-danger" if item["priority"] == "CRITICAL" else "badge-custom-warning" if item["priority"] == "WARNING" else "badge-custom-info"
                     st.markdown(f"""
                     <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(31, 41, 55, 0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 8px 12px; margin-bottom: 6px;">
